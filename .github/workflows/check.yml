@@ -74,7 +74,7 @@ jobs:
         run: make fmt-check
 
   docs:
-    name: Ensure documentation is up to date
+    name: Check documentation
     timeout-minutes: 30
     runs-on: ubuntu-24.04
     steps:
