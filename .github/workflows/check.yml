@@ -1,4 +1,4 @@
-name: ci
+name: check
 on:
   push:
 
@@ -16,6 +16,7 @@ env:
 
 jobs:
   lint:
+    name: Lint configuration
     timeout-minutes: 30
     runs-on: ubuntu-24.04
     steps:
@@ -40,6 +41,7 @@ jobs:
         run: make lint
 
   validate:
+    name: Validate configuration
     timeout-minutes: 30
     runs-on: ubuntu-24.04
     steps:
@@ -51,10 +53,13 @@ jobs:
         uses: 'hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd' # v3.1.2
         with:
           terraform_version: '1.11.4'
+      - name: Initialize Terraform
+        run: make init
       - name: Validate configuration
         run: make validate
 
-  check-formatting:
+  formatting:
+    name: Check formatting
     timeout-minutes: 30
     runs-on: ubuntu-24.04
     steps:
@@ -68,7 +73,8 @@ jobs:
       - name: Check formatting
         run: make fmt-check
 
-  check-docs:
+  docs:
+    name: Ensure documentation is up to date
     timeout-minutes: 30
     runs-on: ubuntu-24.04
     steps:
