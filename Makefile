@@ -47,3 +47,22 @@ docs-check:
 	docker run --rm --volume "$(shell pwd):/terraform-docs" \
 	-u $(shell id -u) $(TERRAFORM_DOCS_IMAGE) --output-check /terraform-docs
 
+.PHONY: extra-checks
+extra-checks: lint-workflows lint-secrets audit-workflows docs-check
+
+.PHONY: lint-workflows
+lint-workflows:
+	actionlint --oneline
+
+.PHONY: lint-secrets
+lint-secrets:
+	gitleaks git --pre-commit --redact --staged --verbose --no-banner
+
+.PHONY: audit-workflows
+audit-workflows:
+	zizmor .github/workflows --offline
+
+.PHONY: install-tools
+install-tools:
+	mise install
+	tflint --init
