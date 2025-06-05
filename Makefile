@@ -47,6 +47,7 @@ docs-check:
 	docker run --rm --volume "$(shell pwd):/terraform-docs" \
 	-u $(shell id -u) $(TERRAFORM_DOCS_IMAGE) --output-check /terraform-docs
 
+# extra checks intended to be run locally
 .PHONY: extra-checks
 extra-checks: lint-workflows lint-secrets audit-workflows docs-check
 
