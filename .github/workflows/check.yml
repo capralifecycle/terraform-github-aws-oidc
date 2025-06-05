@@ -15,8 +15,8 @@ env:
   TF_CLI_ARGS: -no-color
 
 jobs:
-  lint:
-    name: Lint configuration
+  terraform:
+    name: Terraform
     timeout-minutes: 30
     runs-on: ubuntu-24.04
     steps:
@@ -40,46 +40,49 @@ jobs:
       - name: Lint module
         run: make lint
 
-  validate:
-    name: Validate configuration
-    timeout-minutes: 30
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          fetch-depth: 0
-          persist-credentials: 'false'
       - name: Install Terraform
         uses: 'hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd' # v3.1.2
         with:
           terraform_version: '1.11.4'
+
       - name: Initialize Terraform
         run: make init
-      - name: Validate configuration
-        run: make validate
 
-  formatting:
-    name: Check formatting
-    timeout-minutes: 30
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          persist-credentials: 'false'
-      - name: Install Terraform
-        uses: 'hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd' # v3.1.2
-        with:
-          terraform_version: '1.11.4'
       - name: Check formatting
         run: make fmt-check
 
-  docs:
-    name: Check documentation
+      - name: Check documentation
+        run: make docs-check
+
+      - name: Validate configuration
+        run: make validate
+
+  github-actions-workflows:
+
+    name: GitHub Actions
     timeout-minutes: 30
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: 'false'
-      - name: Check if module documentation is up to date
-        run: make docs-check
+
+      - name: Lint workflows
+        uses: raven-actions/actionlint@3a24062651993d40fed1019b58ac6fbdfbf276cc #
+
+      - name: Audit workflows
+        uses: zizmorcore/zizmor-action@f52a838cfabf134edcbaa7c8b3677dde20045018 # v0.1.1
+
+  renovate:
+    name: Renovate
+    timeout-minutes: 30
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: 'false'
+
+      - name: Validate config
+        run: npx --yes --package renovate -- renovate-config-validator --strict renovate.json5
+
