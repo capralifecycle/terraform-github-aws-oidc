@@ -4,7 +4,9 @@ Terraform module for configuring authentication between GitHub Actions and AWS, 
 
 ## Description
 
-The module needs to know the following things:
+This module creates two IAM roles for GitHub Actions workflows to authenticate with AWS using OpenID Connect (OIDC).
+
+The module needs to know the following:
 - **GitHub owner, repository name and trunk branch name**: The trunk branch is granted permissions to assume a more permissive IAM role, while non-trunk branches are granted permissions to assume a more restrictive one.
 - **S3 bucket name and state files**: The created IAM roles will be granted permissions to read and write to these Terraform state files.
 - **IAM policy documents**: The IAM policy documents for the admin and reader roles, which define the permissions required to manage the particular remote resources for the project, such as ECS clusters, Lambda functions, etc.
