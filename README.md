@@ -42,4 +42,11 @@ Terraform module for configuring authentication between GitHub Actions and AWS, 
 | name_prefix | The name prefix used for the resources created by this module. | `string` | n/a | yes |
 | read_policy_document | The IAM policy document for the reader role assumed from non-trunk branch workflows. | ```object({ Version = string Statement = list(object({ Effect = string Action = list(string) Resource = string })) })``` | n/a | yes |
 | tfstate_config | The Terraform state backend configuration, to which the provider will provide access. | ```object({ bucket_name = string state_files = list(string) })``` | n/a | yes |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| admin_role | The IAM Role used for trunk branch deployments, providing full access to the remote resources. |
+| reader_role | The IAM Role used for non-trunk branch deployments, providing read access to the remote resources. |
 <!-- END_TF_DOCS -->
