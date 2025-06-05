@@ -38,12 +38,12 @@ flowchart LR
 
 %% trunk
     push[$ git push] --> trunk -- trigger --> wf_release
-    wf_release -- 1. assumes --> admin_role
-    wf_release -- 2. reads/writes --> resources
+    wf_release -- assumes --> admin_role
+    wf_release --  reads/writes --> resources
 %% non-trunk
     push --> non_trunk -- trigger --> wf_tests
-    wf_tests -- 1. assumes --> reader_role
-    wf_tests -- 2. reads --> resources
+    wf_tests -- assumes --> reader_role
+    wf_tests -- reads --> resources
 ```
 
 
@@ -51,6 +51,11 @@ flowchart LR
 
 ```mermaid
 flowchart LR
+    subgraph github[GitHub]
+        subgraph gha_workflows[Workflows]
+            wf[release.yml]
+        end
+    end
     subgraph aws[AWS]
         subgraph oidc[OpenID Connect]
             provider[OIDC Provider]
@@ -59,12 +64,7 @@ flowchart LR
             role[Admin Role]
         end
     end
-    subgraph github[GitHub]
-        subgraph gha_workflows[Workflows]
-            wf[release.yml]
-        end
-    end
-
+    
     wf -- JWT --> provider
     provider -- Access Token --> wf
     wf -- Assumes w/Access Token --> role
