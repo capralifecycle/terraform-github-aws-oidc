@@ -2,6 +2,75 @@
 
 Terraform module for configuring authentication between GitHub Actions and AWS, using OpenID Connect.
 
+## Description
+
+The module needs to know the following things:
+- **GitHub owner, repository name and trunk branch name**: The trunk branch is granted permissions to assume a more permissive IAM role, while non-trunk branches are granted permissions to assume a more restrictive one.
+- **S3 bucket name and state files**: The created IAM roles will be granted permissions to read and write to these Terraform state files.
+- **IAM policy documents**: The IAM policy documents for the admin and reader roles, which define the permissions required to manage the particular remote resources for the project, such as ECS clusters, Lambda functions, etc.
+
+## Overview
+
+### Role and Workflow Interaction
+
+```mermaid
+flowchart LR
+    subgraph github[GitHub]
+        subgraph branches[Branches]
+            trunk[main]
+            non_trunk[feat-392/add-cluster-node]
+        end
+        subgraph gha_workflows[Workflows]
+            wf_release[release.yml]
+            wf_tests[tests.yml]
+        end
+    end
+    subgraph aws[AWS]
+        subgraph iam_roles[IAM Roles]
+            admin_role[Admin Role]
+            reader_role[Reader Role]
+        end
+        subgraph resources[Resources]
+            lambda_functions[Lambda Function]
+            ecs_cluster[ECS Cluster]
+        end
+    end
+
+%% trunk
+    push[$ git push] --> trunk -- trigger --> wf_release
+    wf_release -- 1. assumes --> admin_role
+    wf_release -- 2. reads/writes --> resources
+%% non-trunk
+    push --> non_trunk -- trigger --> wf_tests
+    wf_tests -- 1. assumes --> reader_role
+    wf_tests -- 2. reads --> resources
+```
+
+
+### Token exchange
+
+```mermaid
+flowchart LR
+    subgraph aws[AWS]
+        subgraph oidc[OpenID Connect]
+            provider[OIDC Provider]
+        end
+        subgraph iam_roles[IAM Roles]
+            role[Admin Role]
+        end
+    end
+    subgraph github[GitHub]
+        subgraph gha_workflows[Workflows]
+            wf[release.yml]
+        end
+    end
+
+    wf -- JWT --> provider
+    provider -- Access Token --> wf
+    wf -- Assumes w/Access Token --> role
+```
+
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
