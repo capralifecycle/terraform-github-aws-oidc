@@ -35,7 +35,6 @@ flowchart LR
             ecs_cluster[ECS Cluster]
         end
     end
-
 %% trunk
     push[$ git push] --> trunk -- trigger --> wf_release
     wf_release -- assumes --> admin_role
@@ -46,30 +45,21 @@ flowchart LR
     wf_tests -- reads --> resources
 ```
 
-
 ### Token exchange
 
 ```mermaid
-flowchart LR
-    subgraph github[GitHub]
-        subgraph gha_workflows[Workflows]
-            wf[release.yml]
-        end
-    end
-    subgraph aws[AWS]
-        subgraph oidc[OpenID Connect]
-            provider[OIDC Provider]
-        end
-        subgraph iam_roles[IAM Roles]
-            role[Admin Role]
-        end
-    end
+sequenceDiagram
+    participant wf as GitHub Actions Workflow
+    participant oidc as OpenID Connect Provider
+    participant sts as AWS Security Token Service
+    participant resources as AWS Resources
     
-    wf -- JWT --> provider
-    provider -- Access Token --> wf
-    wf -- Assumes w/Access Token --> role
+    wf->>oidc: Pass JWT
+    oidc->>wf: Return access token
+    wf->> sts: Assume role with access token
+    sts ->> wf: Return temporary credentials
+    wf ->> resources: Manage AWS Resources
 ```
-
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
