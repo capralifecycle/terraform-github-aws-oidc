@@ -69,29 +69,29 @@ sequenceDiagram
 | Name | Version |
 |------|---------|
 | terraform | >= 1.11.0 |
-| aws | 6.0.0 |
+| aws | 6.5.0 |
 | tls | 4.1.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | 6.0.0 |
+| aws | 6.5.0 |
 | tls | 4.1.0 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [aws_iam_openid_connect_provider.github](https://registry.terraform.io/providers/hashicorp/aws/6.0.0/docs/resources/iam_openid_connect_provider) | resource |
-| [aws_iam_policy.terraform_state_management](https://registry.terraform.io/providers/hashicorp/aws/6.0.0/docs/resources/iam_policy) | resource |
-| [aws_iam_role.admin](https://registry.terraform.io/providers/hashicorp/aws/6.0.0/docs/resources/iam_role) | resource |
-| [aws_iam_role.read](https://registry.terraform.io/providers/hashicorp/aws/6.0.0/docs/resources/iam_role) | resource |
-| [aws_iam_role_policy.admin](https://registry.terraform.io/providers/hashicorp/aws/6.0.0/docs/resources/iam_role_policy) | resource |
-| [aws_iam_role_policy.reader](https://registry.terraform.io/providers/hashicorp/aws/6.0.0/docs/resources/iam_role_policy) | resource |
-| [aws_iam_role_policy_attachment.admin_tfstate_mgmt](https://registry.terraform.io/providers/hashicorp/aws/6.0.0/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.reader_tfstate_mgmt](https://registry.terraform.io/providers/hashicorp/aws/6.0.0/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_partition.this](https://registry.terraform.io/providers/hashicorp/aws/6.0.0/docs/data-sources/partition) | data source |
+| [aws_iam_openid_connect_provider.github](https://registry.terraform.io/providers/hashicorp/aws/6.5.0/docs/resources/iam_openid_connect_provider) | resource |
+| [aws_iam_policy.terraform_state_management](https://registry.terraform.io/providers/hashicorp/aws/6.5.0/docs/resources/iam_policy) | resource |
+| [aws_iam_role.admin](https://registry.terraform.io/providers/hashicorp/aws/6.5.0/docs/resources/iam_role) | resource |
+| [aws_iam_role.read](https://registry.terraform.io/providers/hashicorp/aws/6.5.0/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy.admin](https://registry.terraform.io/providers/hashicorp/aws/6.5.0/docs/resources/iam_role_policy) | resource |
+| [aws_iam_role_policy.reader](https://registry.terraform.io/providers/hashicorp/aws/6.5.0/docs/resources/iam_role_policy) | resource |
+| [aws_iam_role_policy_attachment.admin_tfstate_mgmt](https://registry.terraform.io/providers/hashicorp/aws/6.5.0/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.reader_tfstate_mgmt](https://registry.terraform.io/providers/hashicorp/aws/6.5.0/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_partition.this](https://registry.terraform.io/providers/hashicorp/aws/6.5.0/docs/data-sources/partition) | data source |
 | [tls_certificate.github](https://registry.terraform.io/providers/hashicorp/tls/4.1.0/docs/data-sources/certificate) | data source |
 
 ## Inputs
