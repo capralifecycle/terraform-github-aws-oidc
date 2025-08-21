@@ -61,3 +61,7 @@ audit-workflows:
 install-tools:
 	mise install
 	tflint --init
+
+.PHONY: validate-renovate
+validate-renovate:
+	npx --yes --package renovate -- renovate-config-validator --strict renovate.json5
