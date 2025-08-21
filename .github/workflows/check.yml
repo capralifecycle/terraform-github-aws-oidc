@@ -24,28 +24,24 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: 'false'
-      - name: Install linter
-        uses: terraform-linters/setup-tflint@ae78205cfffec9e8d93fd2b3115c7e9d3166d4b6 # v5.0.0
+
+      - name: Install tools
+        uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2.4.4
         with:
-          tflint_version: v0.53.0
-      - name: Load linter plugin cache
+          version: 2025.8.7
+          install: true # run mise install
+          cache: true
+
+      - name: Load tflint plugin cache
         uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
         with:
           path: ~/.tflint.d/plugins
           key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
-      - name: Install linter plugins
-        run: tflint --init
-        env:
-          GITHUB_TOKEN: ${{ github.token }} # to avoid rate limits on plugin installation
+
       - name: Lint module
         run: make lint
 
-      - name: Install Terraform
-        uses: 'hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd' # v3.1.2
-        with:
-          terraform_version: '1.11.4'
-
-      - name: Initialize Terraform
+      - name: Initialize module
         run: make init
 
       - name: Check formatting
@@ -69,9 +65,9 @@ jobs:
         with:
           persist-credentials: 'false'
 
-      - name: Lint workflows
+      - name: lint workflows
         uses: raven-actions/actionlint@a9f1bde40b4c45b3f92816d3834ec9e719895a0e #
 
-      - name: Audit workflows
+      - name: audit workflows
         uses: zizmorcore/zizmor-action@5ca5fc7a4779c5263a3ffa0e1f693009994446d1 # v0.1.2
 

@@ -28,11 +28,11 @@ lint-init:
 	tflint --init
 
 .PHONY: lint
-lint:
+lint: lint-init
 	tflint --format compact
 
 .PHONY: lint-fix
-lint-fix:
+lint-fix: lint-init
 	tflint --fix
 
 docs:
@@ -60,7 +60,6 @@ audit-workflows:
 .PHONY: install-tools
 install-tools:
 	mise install
-	tflint --init
 
 .PHONY: validate-renovate
 validate-renovate:
