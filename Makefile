@@ -1,7 +1,3 @@
-TERRAFORM_DOCS_IMAGE_NAME=quay.io/terraform-docs/terraform-docs
-TERRAFORM_DOCS_IMAGE_TAG=sha256:37329e2dc2518e7f719a986a3954b10771c3fe000f50f83fd4d98d489df2eae2
-TERRAFORM_DOCS_IMAGE="${TERRAFORM_DOCS_IMAGE_NAME}@${TERRAFORM_DOCS_IMAGE_TAG}"
-
 .PHONY: all
 all: build
 
@@ -40,12 +36,10 @@ lint-fix:
 	tflint --fix
 
 docs:
-	docker run --rm --volume "$(shell pwd):/terraform-docs" \
-  -u $(shell id -u) $(TERRAFORM_DOCS_IMAGE) /terraform-docs
+	terraform-docs .
 
 docs-check:
-	docker run --rm --volume "$(shell pwd):/terraform-docs" \
-	-u $(shell id -u) $(TERRAFORM_DOCS_IMAGE) --output-check /terraform-docs
+	terraform-docs . --output-check
 
 # extra checks intended to be run locally
 .PHONY: extra-checks
