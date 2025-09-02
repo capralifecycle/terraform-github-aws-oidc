@@ -37,6 +37,7 @@ lint-fix: lint-init
 
 .PHONY: release
 release:
+	npm ci
 	npm run semantic-release
 
 docs:
