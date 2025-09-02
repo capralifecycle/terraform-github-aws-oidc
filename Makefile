@@ -35,6 +35,10 @@ lint: lint-init
 lint-fix: lint-init
 	tflint --fix
 
+.PHONY: release
+release:
+	npm run semantic-release
+
 docs:
 	terraform-docs .
 
