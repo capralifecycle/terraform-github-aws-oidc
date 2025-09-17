@@ -35,6 +35,10 @@ lint: lint-init
 lint-fix: lint-init
 	tflint --fix
 
+.PHONY: upgrade-lockfile
+upgrade-lockfile:
+	terraform init -upgrade
+
 .PHONY: release
 release:
 	npm ci
