@@ -69,7 +69,7 @@ jobs:
         uses: raven-actions/actionlint@193928d7453e51825534c0e4ecf3b351e33421d7 #
 
       - name: audit workflows
-        uses: zizmorcore/zizmor-action@5ca5fc7a4779c5263a3ffa0e1f693009994446d1 # v0.1.2
+        uses: zizmorcore/zizmor-action@e673c3917a1aef3c65c972347ed84ccd013ecda4 # v0.2.0
 
   release:
     name: Create GitHub release
