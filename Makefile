@@ -77,4 +77,7 @@ validate-renovate:
 .PHONY: upgrade-deps
 upgrade-deps:
 	npm run upgrade-dependencies
+	mise upgrade terraform --bump
+	terraform init -upgrade
+	terraform init -upgrade
 
