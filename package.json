@@ -7,11 +7,13 @@
     "type": "git",
     "url": "git+https://github.com/capralifecycle/terraform-github-aws-oidc.git"
   },
-  "devDependencies": {
-    "semantic-release": "24.2.9"
-  },
   "scripts": {
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "upgrade-dependencies": "ncu --upgrade --install always --format group"
+  },
+  "devDependencies": {
+    "npm-check-updates": "19.1.1",
+    "semantic-release": "24.2.9"
   },
   "release": {
     "plugins": [

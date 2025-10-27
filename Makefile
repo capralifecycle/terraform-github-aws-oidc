@@ -73,3 +73,8 @@ install-tools:
 .PHONY: validate-renovate
 validate-renovate:
 	npx --yes --package renovate -- renovate-config-validator --strict renovate.json5
+
+.PHONY: upgrade-deps
+upgrade-deps:
+	npm run upgrade-dependencies
+
