@@ -2,4 +2,4 @@
 actionlint = "1.7.10"
 terraform = "1.14.3"
 terraform-docs = "0.21.0"
-tflint = "0.60.0"
+tflint = "0.61.0"
