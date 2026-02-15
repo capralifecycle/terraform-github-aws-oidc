@@ -66,7 +66,7 @@ jobs:
           persist-credentials: 'false'
 
       - name: lint workflows
-        uses: raven-actions/actionlint@fd1b743b251ce06a07f899ad2e53e238e94df30d #
+        uses: raven-actions/actionlint@e01d1ea33dd6a5ed517d95b4c0c357560ac6f518 # v2.1.1
 
       - name: audit workflows
         uses: zizmorcore/zizmor-action@135698455da5c3b3e55f73f4419e481ab68cdd95 # v0.4.1
