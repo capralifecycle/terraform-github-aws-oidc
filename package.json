@@ -12,7 +12,7 @@
     "upgrade-dependencies": "ncu --upgrade --install always --format group"
   },
   "devDependencies": {
-    "npm-check-updates": "19.3.2",
+    "npm-check-updates": "19.4.0",
     "semantic-release": "25.0.3"
   },
   "release": {
