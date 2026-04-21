@@ -67,7 +67,7 @@ sequenceDiagram
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | terraform | >= 1.11.0 |
 | aws | >= 6.0 |
 | tls | >= 4.0 |
@@ -75,14 +75,14 @@ sequenceDiagram
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | aws | >= 6.0 |
 | tls | >= 4.0 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_iam_openid_connect_provider.github](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_openid_connect_provider) | resource |
 | [aws_iam_policy.terraform_state_management](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role.admin](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
@@ -97,7 +97,7 @@ sequenceDiagram
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | admin_policy_document | The IAM policy document for the admin role assumed from trunk branch workflows. | ```object({ Version = string Statement = list(object({ Effect = string Action = list(string) Resource = string })) })``` | n/a | yes |
 | github | The GitHub configuration used for configuring the OIDC provider. | ```object({ owner = string repo = string trunk_branch = string })``` | n/a | yes |
 | name_prefix | The name prefix used for the resources created by this module. | `string` | n/a | yes |
@@ -107,7 +107,7 @@ sequenceDiagram
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | admin_role | The IAM Role used for trunk branch deployments, providing full access to the remote resources. |
 | reader_role | The IAM Role used for non-trunk branch deployments, providing read access to the remote resources. |
 <!-- END_TF_DOCS -->
