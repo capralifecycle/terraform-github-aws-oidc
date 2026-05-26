@@ -1,5 +1,5 @@
 [tools]
 actionlint = "1.7.12"
 terraform = "1.15.1"
-terraform-docs = "0.22.0"
+terraform-docs = "0.24.0"
 tflint = "0.62.1"
