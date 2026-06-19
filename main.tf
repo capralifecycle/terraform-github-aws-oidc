@@ -1,6 +1,7 @@
 locals {
   repo_with_owner = "${var.github.owner}/${var.github.repo}"
   audience        = format("sts.%v", data.aws_partition.this.dns_suffix)
+  bucket_arn      = "arn:${data.aws_partition.this.partition}:s3:::${var.tfstate_config.bucket_name}"
 }
 
 
@@ -13,6 +14,7 @@ resource "aws_iam_openid_connect_provider" "github" {
   client_id_list  = ["https://github.com/${var.github.owner}", local.audience]
   thumbprint_list = toset([data.tls_certificate.github.certificates[0].sha1_fingerprint])
   url             = "https://token.actions.githubusercontent.com"
+  tags            = var.tags
 }
 
 #
@@ -24,13 +26,14 @@ resource "aws_iam_openid_connect_provider" "github" {
 resource "aws_iam_policy" "terraform_state_management" {
   name        = "gha-${var.name_prefix}-tfstate-mgmt"
   description = "Permissions required to manage the Terraform S3 backend state and lockfile."
+  tags        = var.tags
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
       {
         Effect   = "Allow",
         Action   = "s3:ListBucket",
-        Resource = "arn:aws:s3:::${var.tfstate_config.bucket_name}",
+        Resource = local.bucket_arn,
         Condition = {
           StringLike = {
             "s3:prefix" = [
@@ -47,7 +50,7 @@ resource "aws_iam_policy" "terraform_state_management" {
         ],
         Resource = [
           for state_file in var.tfstate_config.state_files :
-          "arn:aws:s3:::${var.tfstate_config.bucket_name}/${state_file}"
+          "${local.bucket_arn}/${state_file}"
         ]
 
       },
@@ -60,7 +63,7 @@ resource "aws_iam_policy" "terraform_state_management" {
         ],
         Resource = [
           for state_file in var.tfstate_config.state_files :
-          "arn:aws:s3:::${var.tfstate_config.bucket_name}/${state_file}.tflock"
+          "${local.bucket_arn}/${state_file}.tflock"
         ]
       }
     ]
@@ -76,7 +79,8 @@ resource "aws_iam_policy" "terraform_state_management" {
 resource "aws_iam_role" "admin" {
   name                 = "gha-${var.name_prefix}-admin"
   description          = "Full access for trunk branch deployment"
-  max_session_duration = 3600
+  max_session_duration = var.max_session_duration
+  tags                 = var.tags
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -119,7 +123,8 @@ resource "aws_iam_role_policy" "admin" {
 resource "aws_iam_role" "read" {
   name                 = "gha-${var.name_prefix}-read"
   description          = "Read-only access for non-trunk branches"
-  max_session_duration = 3600
+  max_session_duration = var.max_session_duration
+  tags                 = var.tags
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
