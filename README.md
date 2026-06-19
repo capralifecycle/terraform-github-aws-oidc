@@ -103,6 +103,8 @@ sequenceDiagram
 | name_prefix | The name prefix used for the resources created by this module. | `string` | n/a | yes |
 | read_policy_document | The IAM policy document for the reader role assumed from non-trunk branch workflows. | ```object({ Version = string Statement = list(object({ Effect = string Action = list(string) Resource = string })) })``` | n/a | yes |
 | tfstate_config | The Terraform state backend configuration, to which the provider will provide access. | ```object({ bucket_name = string state_files = list(string) })``` | n/a | yes |
+| max_session_duration | The maximum session duration (in seconds) for the admin and reader roles. | `number` | `3600` | no |
+| tags | A map of tags to apply to all resources created by this module. | `map(string)` | `{}` | no |
 
 ## Outputs
 

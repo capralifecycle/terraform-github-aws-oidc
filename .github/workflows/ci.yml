@@ -53,6 +53,9 @@ jobs:
       - name: Validate configuration
         run: make validate
 
+      - name: Run tests
+        run: make test
+
   github-actions-workflows:
 
     name: GitHub Actions
