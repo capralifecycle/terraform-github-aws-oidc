@@ -23,6 +23,10 @@ fmt-check:
 validate:
 	terraform validate
 
+.PHONY: test
+test:
+	terraform test
+
 .PHONY: lint-init
 lint-init:
 	tflint --init
