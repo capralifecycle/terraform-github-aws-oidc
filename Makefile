@@ -2,10 +2,10 @@
 all: build
 
 .PHONY: build
-build: init fmt lint-fix docs validate
+build: init fmt lint-fix docs validate test
 
-.PHONY: check
-check: init fmt-check lint docs-check validate
+.PHONY: ci
+ci: init fmt-check lint docs-check validate test
 
 .PHONY: init
 init:
