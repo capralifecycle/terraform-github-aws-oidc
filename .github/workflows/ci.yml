@@ -58,6 +58,8 @@ jobs:
 
       - name: audit workflows
         uses: zizmorcore/zizmor-action@192e21d79ab29983730a13d1382995c2307fbcaa # v0.5.7
+        with:
+          advanced-security: false
 
   release:
     name: Create GitHub release
