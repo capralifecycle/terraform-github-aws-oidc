@@ -31,7 +31,9 @@ variables {
   name_prefix = "demo-app"
   github = {
     owner        = "example-org"
+    owner_id     = "1111111"
     repo         = "demo-repo"
+    repo_id      = "2222222"
     trunk_branch = "main"
   }
   tfstate_config = {
@@ -101,6 +103,65 @@ run "trunk_branch_can_only_assume_admin_role" {
   }
 }
 
+run "both_subject_claim_formats_are_trusted" {
+  command = apply
+
+  assert {
+    condition     = strcontains(aws_iam_role.admin.assume_role_policy, "repo:example-org@1111111/demo-repo@2222222:ref:refs/heads/main")
+    error_message = "Admin role must trust the immutable subject claim format."
+  }
+
+  assert {
+    condition     = strcontains(aws_iam_role.read.assume_role_policy, "repo:example-org@1111111/demo-repo@2222222:pull_request")
+    error_message = "Reader role must trust the immutable subject claim format."
+  }
+}
+
+run "trunk_branch_is_excluded_from_reader_in_both_formats" {
+  command = apply
+
+  # Every subject the reader role is allowed to assume from must have a matching
+  # StringNotLike entry, or trunk runs fall through into the reader role.
+  assert {
+    condition = alltrue([
+      for subject in local.trunk_subjects :
+      strcontains(jsonencode(jsondecode(aws_iam_role.read.assume_role_policy).Statement[0].Condition.StringNotLike), subject)
+    ])
+    error_message = "Reader role must exclude the trunk branch in every trusted subject claim format."
+  }
+}
+
+
+run "drops_the_original_subject_claim_format_when_untrusted" {
+  command = apply
+
+  variables {
+    github = {
+      owner                      = "example-org"
+      owner_id                   = "1111111"
+      repo                       = "demo-repo"
+      repo_id                    = "2222222"
+      trunk_branch               = "main"
+      trust_legacy_subject_claim = false
+    }
+  }
+
+  assert {
+    condition     = !strcontains(aws_iam_role.admin.assume_role_policy, "repo:example-org/demo-repo:")
+    error_message = "Admin role must no longer trust the original subject claim format."
+  }
+
+  assert {
+    condition     = !strcontains(aws_iam_role.read.assume_role_policy, "repo:example-org/demo-repo:")
+    error_message = "Reader role must no longer trust the original subject claim format."
+  }
+
+  assert {
+    condition     = strcontains(aws_iam_role.read.assume_role_policy, "repo:example-org@1111111/demo-repo@2222222:pull_request")
+    error_message = "Reader role must still trust the immutable subject claim format."
+  }
+}
+
 run "default_session_duration_is_one_hour" {
   command = plan
 
@@ -131,4 +192,20 @@ run "rejects_empty_state_files" {
   }
 
   expect_failures = [var.tfstate_config]
+}
+
+run "rejects_a_wildcard_repository_id" {
+  command = plan
+
+  variables {
+    github = {
+      owner        = "example-org"
+      owner_id     = "1111111"
+      repo         = "demo-repo"
+      repo_id      = "*"
+      trunk_branch = "main"
+    }
+  }
+
+  expect_failures = [var.github]
 }
