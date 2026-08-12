@@ -1,14 +1,38 @@
 variable "github" {
-  description = "The GitHub configuration used for configuring the OIDC provider."
+  description = <<-EOT
+    The GitHub configuration used for configuring the OIDC provider.
+
+    `owner_id` and `repo_id` are the numeric GitHub IDs used by the immutable
+    subject claim format. Read them from the `github_organization` and
+    `github_repository` data sources rather than pasting them in, so that they
+    cannot drift from `owner` and `repo`.
+
+    `trust_legacy_subject_claim` keeps the original, mutable subject claim
+    format trusted alongside the immutable one. Set it to false once the
+    repository has opted in to immutable subject claims, so that a future
+    repository reusing the name is no longer trusted.
+  EOT
   type = object({
-    owner        = string
-    repo         = string
-    trunk_branch = string
+    owner                      = string
+    owner_id                   = string
+    repo                       = string
+    repo_id                    = string
+    trunk_branch               = string
+    trust_legacy_subject_claim = optional(bool, true)
   })
 
   validation {
     condition     = length(var.github.owner) > 0 && length(var.github.repo) > 0 && length(var.github.trunk_branch) > 0
     error_message = "github.owner, github.repo and github.trunk_branch must all be non-empty."
+  }
+
+  # A wildcard here would still produce a working trust policy, but one that
+  # matches far more than the intended repository, so reject anything but digits.
+  validation {
+    condition = alltrue([
+      for id in [var.github.owner_id, var.github.repo_id] : can(regex("^[1-9][0-9]*$", id))
+    ])
+    error_message = "github.owner_id and github.repo_id must each be a numeric GitHub ID."
   }
 }
 

@@ -2,6 +2,33 @@ locals {
   repo_with_owner = "${var.github.owner}/${var.github.repo}"
   audience        = format("sts.%v", data.aws_partition.this.dns_suffix)
   bucket_arn      = "arn:${data.aws_partition.this.partition}:s3:::${var.tfstate_config.bucket_name}"
+
+  # GitHub Actions OIDC tokens carry the repository in the `sub` claim in one of two
+  # formats: the original `owner/repo`, and an immutable one that appends the numeric
+  # owner and repository IDs, `owner@1234/repo@5678`. Which one a repository gets
+  # depends on a per-repository setting, so trust policies accept both until the
+  # repository has opted in and `trust_legacy_subject_claim` is turned off.
+  #
+  # The IDs are required rather than wildcarded. Besides surviving a rename, this keeps
+  # the pattern literal up to and including the repository name: an IAM `*` also
+  # matches `/` and `:`, so a wildcard owner ID would let the pattern's trailing
+  # `:ref:refs/heads/<branch>` be satisfied from elsewhere in the claim.
+  #
+  # https://github.blog/changelog/2026-04-23-immutable-subject-claims-for-github-actions-oidc-tokens/
+  repo_claims = concat(
+    var.github.trust_legacy_subject_claim ? [local.repo_with_owner] : [],
+    ["${var.github.owner}@${var.github.owner_id}/${var.github.repo}@${var.github.repo_id}"],
+  )
+
+  trunk_subjects = [
+    for repo in local.repo_claims : "repo:${repo}:ref:refs/heads/${var.github.trunk_branch}"
+  ]
+  any_branch_subjects = flatten([
+    for repo in local.repo_claims : [
+      "repo:${repo}:ref:refs/heads/*",
+      "repo:${repo}:pull_request",
+    ]
+  ])
 }
 
 
@@ -92,7 +119,7 @@ resource "aws_iam_role" "admin" {
         },
         Condition = {
           "StringLike" = {
-            "token.actions.githubusercontent.com:sub" = "repo:${local.repo_with_owner}:ref:refs/heads/${var.github.trunk_branch}"
+            "token.actions.githubusercontent.com:sub" = local.trunk_subjects
           },
           "StringEquals" = {
             "token.actions.githubusercontent.com:aud" = local.audience
@@ -136,13 +163,13 @@ resource "aws_iam_role" "read" {
         },
         Condition = {
           "StringLike" = {
-            "token.actions.githubusercontent.com:sub" = [
-              "repo:${local.repo_with_owner}:ref:refs/heads/*",
-              "repo:${local.repo_with_owner}:pull_request"
-            ]
+            "token.actions.githubusercontent.com:sub" = local.any_branch_subjects
           },
+          # Listing every trunk-branch subject format is load-bearing: StringNotLike is
+          # satisfied only when the claim matches none of the values, so a format missing
+          # here would let trunk runs assume the reader role.
           "StringNotLike" = {
-            "token.actions.githubusercontent.com:sub" = "repo:${local.repo_with_owner}:ref:refs/heads/${var.github.trunk_branch}"
+            "token.actions.githubusercontent.com:sub" = local.trunk_subjects
           },
           "StringEquals" = {
             "token.actions.githubusercontent.com:aud" = local.audience
