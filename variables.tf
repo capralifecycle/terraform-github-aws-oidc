@@ -2,23 +2,17 @@ variable "github" {
   description = <<-EOT
     The GitHub configuration used for configuring the OIDC provider.
 
-    `owner_id` and `repo_id` are the numeric GitHub IDs used by the immutable
-    subject claim format. Read them from the `github_organization` and
-    `github_repository` data sources rather than pasting them in, so that they
-    cannot drift from `owner` and `repo`.
-
-    `trust_legacy_subject_claim` keeps the original, mutable subject claim
-    format trusted alongside the immutable one. Set it to false once the
-    repository has opted in to immutable subject claims, so that a future
-    repository reusing the name is no longer trusted.
+    `owner_id` and `repo_id` are the numeric GitHub IDs used by the subject
+    claim. Read them from the `github_organization` and `github_repository` data
+    sources rather than pasting them in, so that they cannot drift from `owner`
+    and `repo`.
   EOT
   type = object({
-    owner                      = string
-    owner_id                   = string
-    repo                       = string
-    repo_id                    = string
-    trunk_branch               = string
-    trust_legacy_subject_claim = optional(bool, true)
+    owner        = string
+    owner_id     = string
+    repo         = string
+    repo_id      = string
+    trunk_branch = string
   })
 
   validation {
