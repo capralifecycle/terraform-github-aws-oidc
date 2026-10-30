@@ -60,7 +60,7 @@ extra-checks: lint-workflows lint-secrets audit-workflows docs-check
 
 .PHONY: lint-workflows
 lint-workflows:
-	actionlint --oneline
+	jactionlint --oneline
 
 .PHONY: lint-secrets
 lint-secrets:

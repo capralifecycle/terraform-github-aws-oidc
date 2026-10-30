@@ -6,7 +6,9 @@ defaults:
   run:
     shell: bash --noprofile --norc -euo pipefail {0}
 
-concurrency: ci-${{ github.ref }}-${{ github.workflow }}
+concurrency: 
+  group: ci-${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -54,7 +56,7 @@ jobs:
           persist-credentials: 'false'
 
       - name: lint workflows
-        uses: raven-actions/actionlint@3d39aea434753780c3b3d4a1a31c854b4dbf49d7 # v2.2.0
+        uses: jdx/jactionlint@baa8d685e2b27ff5821558c9eeabb2051c1da61b # v2.4.0
 
       - name: audit workflows
         uses: zizmorcore/zizmor-action@53290badfa369cb0bf7ad16342cb62c2fa47ac7b # v0.8.0
