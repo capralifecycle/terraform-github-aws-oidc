@@ -6,7 +6,9 @@ defaults:
   run:
     shell: bash --noprofile --norc -euo pipefail {0}
 
-concurrency: ci-${{ github.ref }}-${{ github.workflow }}
+concurrency: 
+  group: ci-${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
