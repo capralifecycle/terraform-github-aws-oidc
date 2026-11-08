@@ -1,5 +1,5 @@
 [tools]
-jactionlint = "2.4.0"
+jactionlint = "2.5.0"
 terraform = "1.17.0"
 terraform-docs = "0.24.0"
 tflint = "0.65.0"
