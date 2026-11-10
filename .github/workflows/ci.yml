@@ -56,7 +56,7 @@ jobs:
           persist-credentials: 'false'
 
       - name: lint workflows
-        uses: jdx/jactionlint@baa8d685e2b27ff5821558c9eeabb2051c1da61b # v2.4.0
+        uses: jdx/jactionlint@9e87e8f34edfc00b849a27807e26eff9d00b936d # v2.5.0
 
       - name: audit workflows
         uses: zizmorcore/zizmor-action@53290badfa369cb0bf7ad16342cb62c2fa47ac7b # v0.8.0
